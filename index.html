@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amigo Secreto 2026</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --text:#172033; --muted:#6b7280;
+      --primary:#6d28d9; --primary2:#8b5cf6; --border:#e5e7eb;
+      --shadow:0 18px 45px rgba(25,25,50,.10); --danger:#b91c1c; --ok:#166534;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,#f7f5ff,#eef5ff);color:var(--text)}
+    .hero{padding:44px 20px 28px;text-align:center}
+    .hero-badge{display:inline-block;background:#ede9fe;color:#5b21b6;padding:8px 14px;border-radius:999px;font-weight:700;font-size:13px;margin-bottom:14px}
+    h1{font-size:clamp(32px,6vw,52px);margin:0 0 10px;letter-spacing:-1.5px}
+    .hero p{max-width:700px;margin:0 auto;color:var(--muted);font-size:16px}
+    .wrap{max-width:1050px;margin:0 auto;padding:0 18px 50px}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}
+    .card{background:rgba(255,255,255,.94);border:1px solid rgba(229,231,235,.9);border-radius:24px;padding:26px;box-shadow:var(--shadow)}
+    .card h2{margin:0 0 7px;font-size:22px}
+    .subtitle{color:var(--muted);font-size:14px;margin:0 0 20px}
+    .rule{background:#faf5ff;border:1px solid #e9d5ff;border-radius:16px;padding:14px;margin-bottom:20px;color:#4c1d95;font-size:14px}
+    label{display:block;font-weight:700;font-size:14px;margin:15px 0 7px}
+    input{width:100%;padding:13px 14px;border:1px solid #d1d5db;border-radius:13px;background:#fff;font-size:15px;outline:none;transition:.2s}
+    input:focus{border-color:var(--primary2);box-shadow:0 0 0 4px rgba(139,92,246,.12)}
+    .gift-row{position:relative}
+    .required{color:var(--danger)}
+    .optional{color:var(--muted);font-weight:500}
+    button{border:0;border-radius:14px;padding:13px 18px;font-weight:800;font-size:15px;cursor:pointer;transition:.2s}
+    .primary{width:100%;margin-top:22px;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 10px 22px rgba(109,40,217,.22)}
+    button:hover{transform:translateY(-1px)}
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .message{display:none;margin-top:15px;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:650}
+    .success{background:#ecfdf3;color:var(--ok);border:1px solid #bbf7d0}
+    .error{background:#fef2f2;color:var(--danger);border:1px solid #fecaca}
+    .search{margin:16px 0 18px}
+    .people{display:grid;gap:13px;max-height:650px;overflow:auto;padding-right:2px}
+    .person{border:1px solid var(--border);border-radius:18px;padding:17px;background:#fff}
+    .person-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+    .person-name{font-size:18px;font-weight:850}
+    .pill{font-size:11px;font-weight:800;color:#5b21b6;background:#ede9fe;padding:6px 9px;border-radius:999px}
+    .gifts{display:grid;gap:8px}
+    .gift{padding:10px 12px;background:#f9fafb;border-radius:11px;font-size:14px}
+    .gift b{color:#6d28d9}
+    .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .meta span{font-size:12px;color:#4b5563;background:#f3f4f6;padding:7px 9px;border-radius:9px}
+    .empty{text-align:center;color:var(--muted);padding:30px 10px}
+    .loading{color:var(--muted);text-align:center;padding:25px}
+    footer{text-align:center;color:#8a8f9d;font-size:12px;padding:0 20px 30px}
+    @media(max-width:800px){.grid{grid-template-columns:1fr}.card{padding:20px}.hero{padding-top:30px}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-badge">🎁 AMIGO SECRETO 2026</div>
+    <h1>¿Qué te gustaría recibir?</h1>
+    <p>Registra tus opciones para que los demás sepan qué regalos te pueden gustar.</p>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <section class="card">
+        <h2>Tu información</h2>
+        <p class="subtitle">Completa el formulario. Los campos marcados con * son obligatorios.</p>
+
+        <div class="rule">
+          💰 <b>Presupuesto mínimo: $50.000 COP</b><br>
+          El regalo elegido debe tener un valor igual o superior a $50.000 COP.
+        </div>
+
+        <form id="form">
+          <label for="nombre">👤 Nombre <span class="required">*</span></label>
+          <input id="nombre" maxlength="80" required placeholder="Ej. Luis Carvajal">
+
+          <label for="regalo1">🎁 Regalo 1 <span class="required">*</span></label>
+          <input id="regalo1" maxlength="150" required placeholder="Ej. Audífonos">
+
+          <label for="regalo2">🎁 Regalo 2 <span class="required">*</span></label>
+          <input id="regalo2" maxlength="150" required placeholder="Ej. Camiseta">
+
+          <label for="regalo3">🎁 Regalo 3 <span class="optional">(opcional)</span></label>
+          <input id="regalo3" maxlength="150" placeholder="Ej. Perfume">
+
+          <label for="talla">📏 Talla <span class="optional">(opcional)</span></label>
+          <input id="talla" maxlength="40" placeholder="Ej. M, 38, 42">
+
+          <label for="color">🎨 Color <span class="optional">(opcional)</span></label>
+          <input id="color" maxlength="60" placeholder="Ej. Negro">
+
+          <button class="primary" id="saveBtn" type="submit">Guardar mi información 🎁</button>
+          <div id="message" class="message"></div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>👥 Participantes</h2>
+        <p class="subtitle">Consulta las opciones de regalo de las personas registradas.</p>
+        <input class="search" id="search" placeholder="🔎 Buscar por nombre...">
+        <div id="people" class="people"><div class="loading">Cargando participantes...</div></div>
+      </section>
+    </div>
+  </main>
+
+  <footer>Amigo Secreto 2026 · Presupuesto mínimo $50.000 COP</footer>
+
+<script>
+  // ============================================================
+  // PEGA AQUÍ TUS DATOS PÚBLICOS DE SUPABASE
+  // La URL de tu proyecto es:
+  // https://ilopwzssqegecjmdscmi.supabase.co
+  //
+  // NO pongas aquí una Secret key ni service_role.
+  // Usa la Publishable key (sb_publishable_...) o la anon key pública.
+  // ============================================================
+  const SUPABASE_URL = "https://ilopwzssqegecjmdscmi.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_i5-BB3go2ONclHU1Ow5tEw_iSZU5VFP";
+
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const TABLE = "Participantes";
+
+  const form = document.getElementById("form");
+  const message = document.getElementById("message");
+  const saveBtn = document.getElementById("saveBtn");
+  const people = document.getElementById("people");
+  const search = document.getElementById("search");
+
+  let participants = [];
+
+  function showMessage(text, ok=false) {
+    message.textContent = text;
+    message.className = "message " + (ok ? "success" : "error");
+    message.style.display = "block";
+    setTimeout(() => message.style.display = "none", 5000);
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+  }
+
+  function renderPeople() {
+    const term = search.value.trim().toLowerCase();
+    const filtered = participants.filter(p => (p.nombre || "").toLowerCase().includes(term));
+
+    if (!filtered.length) {
+      people.innerHTML = '<div class="empty">No hay participantes que coincidan con la búsqueda.</div>';
+      return;
+    }
+
+    people.innerHTML = filtered.map(p => {
+      const gifts = [p.regalo_1, p.regalo_2, p.regalo_3].filter(Boolean);
+      return `
+        <article class="person">
+          <div class="person-head">
+            <div class="person-name">${escapeHtml(p.nombre)}</div>
+            <div class="pill">🎁 ${gifts.length} opción${gifts.length === 1 ? "" : "es"}</div>
+          </div>
+          <div class="gifts">
+            ${gifts.map((g,i) => `<div class="gift"><b>Opción ${i+1}:</b> ${escapeHtml(g)}</div>`).join("")}
+          </div>
+          <div class="meta">
+            ${p.talla ? `<span>📏 Talla: ${escapeHtml(p.talla)}</span>` : ""}
+            ${p.color ? `<span>🎨 Color: ${escapeHtml(p.color)}</span>` : ""}
+            <span>💰 Mínimo: $50.000 COP</span>
+          </div>
+        </article>`;
+    }).join("");
+  }
+
+  async function loadParticipants() {
+    const { data, error } = await db
+      .from(TABLE)
+      .select("id,created_at,nombre,regalo_1,regalo_2,regalo_3,talla,color")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      people.innerHTML = `<div class="empty">No se pudieron cargar los participantes.<br><small>${escapeHtml(error.message)}</small></div>`;
+      return;
+    }
+    participants = data || [];
+    renderPeople();
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const nombre = document.getElementById("nombre").value.trim();
+    const regalo1 = document.getElementById("regalo1").value.trim();
+    const regalo2 = document.getElementById("regalo2").value.trim();
+    const regalo3 = document.getElementById("regalo3").value.trim();
+    const talla = document.getElementById("talla").value.trim();
+    const color = document.getElementById("color").value.trim();
+
+    if (!nombre || !regalo1 || !regalo2) {
+      showMessage("Completa el nombre y las dos primeras opciones de regalo.");
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Guardando...";
+
+    // Evita registrar el mismo nombre dos veces.
+    const { data: existing, error: checkError } = await db
+      .from(TABLE)
+      .select("id,nombre")
+      .ilike("nombre", nombre);
+
+    if (checkError) {
+      showMessage("No se pudo comprobar el nombre. Revisa la conexión con Supabase.");
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Guardar mi información 🎁";
+      return;
+    }
+
+    if (existing && existing.length > 0) {
+      showMessage("Ese nombre ya está registrado.");
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Guardar mi información 🎁";
+      return;
+    }
+
+    const { error } = await db.from(TABLE).insert([{
+      nombre, regalo_1: regalo1, regalo_2: regalo2,
+      regalo_3: regalo3 || null, talla: talla || null, color: color || null
+    }]);
+
+    if (error) {
+      showMessage("No se pudo guardar: " + error.message);
+    } else {
+      showMessage("¡Listo! Tu información quedó registrada. 🎁", true);
+      form.reset();
+      await loadParticipants();
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Guardar mi información 🎁";
+  });
+
+  search.addEventListener("input", renderPeople);
+
+  loadParticipants();
+</script>
+</body>
+</html>
